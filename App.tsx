@@ -35,7 +35,7 @@ function App(): JSX.Element {
   return (
     <View style={styles.sectionContainer}>
       <Text>
-        Оно ожило!Верно?
+        Оно ожило! Верно?
       </Text>
     </View>
   );
