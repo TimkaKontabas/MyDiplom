@@ -7,6 +7,8 @@ permissions:
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "v*"
 
@@ -33,29 +35,56 @@ jobs:
       - name: Setup Node  
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Run Npm Install
         run: npm install
 
       - name: Build application
-        run: npm run build:android
+        run: npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && rm -rf android/app/src/main/res/drawable-* && rm -rf android/app/src/main/res/raw/* && cd android && ./gradlew assembleRelease && cd ..
 
       - name: List the .apks compiled
         run: ls ./android/app/build/outputs/apk/release/ -hal
 
-      - name: Rename the .apk to the tag version
-        run: mv ./android/app/build/outputs/apk/release/app-universal-release.apk ./android/app/build/outputs/apk/release/app_name_${{ github.ref_name }}.apk
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
+          asset_name: mything
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "This is my release text"
 
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     draft: false
+      #     prerelease: false
+      # - name: Upload Release Asset
+      #   id: upload-release-asset 
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+      #     asset_path: ./android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
+      #     asset_name: app.apk
+      #     asset_content_type: application/zip
 
       # Creating and Uploading the releases
-      - name: Create Release and Uploading Files
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
-            android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk
-            android/app/build/outputs/apk/release/app-x86_64-release.apk
-            android/app/build/outputs/apk/release/app-x86-release.apk
-            android/app/build/outputs/apk/release/app_name_${{ github.ref_name }}.apk
+      # - name: Create Release and Uploading Files
+      #   uses: softprops/action-gh-release@v1
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   with:
+      #     files: |
+      #       android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
+      #       android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk
+      #       android/app/build/outputs/apk/release/app-x86_64-release.apk
+      #       android/app/build/outputs/apk/release/app-x86-release.apk
+      #       android/app/build/outputs/apk/release/app_name_${{ github.ref_name }}.apk
