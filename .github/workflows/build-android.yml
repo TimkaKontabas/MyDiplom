@@ -9,6 +9,9 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - "master"
+      - "main"
 
 jobs:
   build:
