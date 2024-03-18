@@ -1,25 +1,38 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './components/HomeScreen';
 import ProfileScreen from './components/ProfileScreen';
+import Shedule from './components/Shedule';
+import Settings from './components/Settings';
 
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{title: 'Welcome'}}
-        />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <Tab.Navigator
+        screenOptions={{headerShown: false}}>
+          <Tab.Screen
+            name="Главная"
+            component={HomeScreen}
+          />
+          <Tab.Screen
+            name="Профиль"
+            component={ProfileScreen}
+          />
+          <Tab.Screen
+            name="Расписание"
+            component={Shedule}
+          />
+          <Tab.Screen
+            name="Настройки"
+            component={Settings}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
   );
 };
 

@@ -1,7 +1,12 @@
-import {Text} from 'react-native';
+import {View, Text} from 'react-native';
+import {styles} from './styles';
 
-const ProfileScreen = ({navigation, route}) => {
-    return <Text>This is {route.params.name}'s profile</Text>;
+const ProfileScreen = () => {
+    return (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={styles.title}>Это профиль </Text>
+        </View>
+    );
 };
 
-export default ProfileScreen
+export default ProfileScreen;
