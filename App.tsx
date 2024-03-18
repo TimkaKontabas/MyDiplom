@@ -6,6 +6,7 @@ import HomeScreen from './components/HomeScreen';
 import ProfileScreen from './components/ProfileScreen';
 import Shedule from './components/Shedule';
 import Settings from './components/Settings';
+import TaskScreen from './components/TaskScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -20,8 +21,8 @@ const App = () => {
             component={HomeScreen}
           />
           <Tab.Screen
-            name="Профиль"
-            component={ProfileScreen}
+            name="Задания"
+            component={TaskScreen}
           />
           <Tab.Screen
             name="Расписание"
@@ -30,6 +31,11 @@ const App = () => {
           <Tab.Screen
             name="Настройки"
             component={Settings}
+          />
+          <Tab.Screen
+            name="Профиль"
+            component={ProfileScreen}
+            options={{tabBarButton: () => null, headerShown: false}}
           />
         </Tab.Navigator>
       </NavigationContainer>

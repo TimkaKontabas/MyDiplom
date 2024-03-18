@@ -4,7 +4,7 @@ import {styles} from './styles';
 const ProfileScreen = () => {
     return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={styles.title}>Это профиль </Text>
+            <Text style={styles.title}>Тут регистрация </Text>
         </View>
     );
 };
