@@ -3,48 +3,7 @@ import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
 
-const data = [
-  {
-    id: "1",
-    name: "Тимур",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-  {
-    id: "2",
-    name: "Jane",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-  {
-    id: "3",
-    name: "Jack",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-  {
-    id: "4",
-    name: "Jill",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-  {
-    id: "5",
-    name: "Jim",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-  {
-    id: "6",
-    name: "Jenny",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-  {
-    id: "7",
-    name: "Jenny",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-  {
-    id: "8",
-    name: "Jenny",
-    avatar: "https://reactnative.dev/img/tiny_logo.png",
-  },
-]
+
 
 const taskData = [
   {
@@ -73,8 +32,29 @@ const taskData = [
   },
 ]
 
+
+const getUserList = (setData) =>  {
+  fetch("https://functions.yandexcloud.net/d4egm43ahjlblbpdh9un/", {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        table: "User"
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      setData(data);
+    });
+}
+
 const HomeScreen = () => {
     const [selected, setSelected] = useState('');
+    const [data, setData] = useState([]);
+
+    getUserList(setData);
 
     return (
       <View style={styles.mainContainer}>

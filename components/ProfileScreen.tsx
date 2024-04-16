@@ -1,12 +1,21 @@
-import {View, Text} from 'react-native';
-import {styles} from './styles';
+import {useEffect, useContext} from 'react';
 
-const ProfileScreen = () => {
-    return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={styles.title}>Тут регистрация </Text>
-        </View>
-    );
+
+import {MainContext} from "../MainContext";
+
+
+const ProfileScreen = ({navigation}) => {
+    const mainObject = useContext(MainContext);
+
+    if (!mainObject.email) {
+        navigation.navigate("Авторизация");
+    } else {
+        navigation.navigate("Профиль");
+    }
+
+    
+
+    
 };
 
 export default ProfileScreen;

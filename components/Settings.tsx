@@ -1,8 +1,12 @@
+import {useEffect, useContext} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import Profile from './settingsComponent/Profile';
 import Notification from './settingsComponent/Notification';
 import Privacy from './settingsComponent/Privacy';
 import Theme from './settingsComponent/Theme';
+
+
+import {MainContext} from "../MainContext";
 
 const settingsData = [
   {
@@ -28,6 +32,17 @@ const settingsData = [
 ]
 
 const Settings = ({navigation}) => {
+  const mainObject = useContext(MainContext);
+
+
+  useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        console.log(mainObject);
+        mainObject.a = 3;
+      });
+      return unsubscribe;
+    }, [navigation]);
+    
     return (
       <FlatList style={styles.settingsList}
         data={settingsData}
