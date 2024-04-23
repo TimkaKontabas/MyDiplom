@@ -54,7 +54,6 @@ const HomeScreen = ({navigation}) => {
     getServerData(needUpdate, setNeedUpdate, setTasks, "getData/Task");
 
 
-
     return (
       <View style={styles.mainContainer}>
         <Calendar style={styles.calendar}
