@@ -1,59 +1,59 @@
-import React, {useState} from 'react';
-import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {View, Pressable, Text, FlatList, Image, StyleSheet} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
+import {
+  URL_SERVER
+} from '@env';
+console.log(URL_SERVER);
+import {MainContext} from "../MainContext";
 
 
-
-const taskData = [
-  {
-    id: "1",
-    name: "Подготовить документацию по диплому",
-  },
-  {
-    id: "2",
-    name: "Сделать страницу профиля",
-  },
-  {
-    id: "3",
-    name: "Расширить расписание",
-  },
-  {
-    id: "4",
-    name: "Добавить элементы в настройки",
-  },
-  {
-    id: "5",
-    name: "Повысить производительность приложения",
-  },
-  {
-    id: "6",
-    name: "Сесть за курсовую",
-  },
-]
-
-const getUserList = (setData) =>  {
-  fetch("https://functions.yandexcloud.net/d4egm43ahjlblbpdh9un/", {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        table: "User"
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      setData(data);
-    });
+const getServerData = (needUpdate, setNeedUpdate, setData, path) =>  {
+  if (needUpdate[path])
+  fetch(URL_SERVER + path, {
+    method: 'Get',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    setData(data);
+    console.log(data);
+    console.log(needUpdate, "bef");
+    needUpdate[path] = false;
+    console.log(needUpdate, "aft");
+    setNeedUpdate(needUpdate);
+  });
 }
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
     const [selected, setSelected] = useState('');
-    const [data, setData] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [tasks, setTasks] = useState([]);
+    const [needUpdate, setNeedUpdate] = useState(
+      { 
+        "getData/UserLiders": true,
+        "getData/Task": true,
+      }
+    );
 
-    getUserList(setData);
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        setNeedUpdate({ 
+          "getData/UserLiders": true,
+          "getData/Task": true,
+        });
+      });
+      return unsubscribe;
+    }, [navigation]);
+
+    getServerData(needUpdate, setNeedUpdate, setUsers, "getData/UserLiders");
+    getServerData(needUpdate, setNeedUpdate, setTasks, "getData/Task");
+
+
 
     return (
       <View style={styles.mainContainer}>
@@ -68,11 +68,11 @@ const HomeScreen = () => {
 
         <View style={styles.dopContainer}>
           <FlatList style={styles.taskList}
-            data={taskData}
-            renderItem={({item}) => <TaskItem task={item}/>}
+            data={tasks}
+            renderItem={({item}) => <TaskItem task={item} navigation={navigation} />}
           />
           <FlatList style={styles.userList}
-            data={data}
+            data={users}
             renderItem={({item}) => <UserItem user={item}/>}
           />
         </View>
@@ -81,23 +81,33 @@ const HomeScreen = () => {
     );
   };
 
-const TaskItem = ({task}) => {
-    return (
-      <View style={styles.taskItem}>
-        <Text style={styles.normalText}>{task.name}</Text>
-      </View>
-    );
+const TaskItem = ({task, navigation}) => {
+  const mainObject = useContext(MainContext);
+
+  const openTask = () => {
+    console.log(mainObject.task);
+    mainObject.setTask(task);
+    navigation.navigate('Задания');
   };
 
+  return (
+    <View style={styles.taskItem}>
+      <Pressable onPress={openTask}>
+        <Text style={styles.normalText}>{task.name}</Text>
+      </Pressable>
+    </View>
+  );
+};
+
 const UserItem = ({user}) => {
-    return (
-      <View style={styles.userItem}>
-        <Text style={styles.placeInRank}>{user.id}</Text>
-        <Text style={styles.userName}>{user.name}</Text>
-        <Image source={{uri: user.avatar}} style={{width: 64, height: 64}}/>
-      </View>
-    );
-  };
+  return (
+    <View style={styles.userItem}>
+      <Text style={styles.placeInRank}>{user.total_points}</Text>
+      <Text style={styles.userName}>{user.name}</Text>
+      <Image source={user.avatar ? {uri: user.avatar} : require('../src/image/empty_profile.png')} style={{width: 64, height: 64}}/>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   mainContainer: {

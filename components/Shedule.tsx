@@ -106,14 +106,12 @@ const dataShedule = [
 ]
 
 const Shedule = () => {
-    console.log(2);
     return (
       <SheduleList data={dataShedule} />
     );
 };
 
 const SheduleList = (data) => {
-    console.log(3);
     return (
       <FlatList style={styles.sheduleList}
         data={data.data}
@@ -123,8 +121,6 @@ const SheduleList = (data) => {
 };
 
 const DayShedule = ({dayData}) => {
-    console.log(4);
-    console.log(dayData);
     return (
       <FlatList style={styles.sheduleItem}
         data={dayData.tasks}

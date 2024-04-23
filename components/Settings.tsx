@@ -34,15 +34,6 @@ const settingsData = [
 const Settings = ({navigation}) => {
   const mainObject = useContext(MainContext);
 
-
-  useEffect(() => {
-      const unsubscribe = navigation.addListener('focus', () => {
-        console.log(mainObject);
-        mainObject.a = 3;
-      });
-      return unsubscribe;
-    }, [navigation]);
-    
     return (
       <FlatList style={styles.settingsList}
         data={settingsData}

@@ -4,7 +4,7 @@ import {styles} from './styles';
 const NewsScreen = () => {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={styles.normalText}>Это настройки</Text>
+        <Text style={styles.normalText}>Это новости</Text>
       </View>
     );
 };

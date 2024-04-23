@@ -8,17 +8,24 @@ import ProfileScreen from './components/ProfileScreen';
 import Shedule from './components/Shedule';
 import Settings from './components/Settings';
 import TaskScreen from './components/TaskScreen';
-import LoginScreen from './components/LoginScreen';
 
 import {MainContext} from './MainContext';
 
 
 const Tab = createBottomTabNavigator();
-let mainObject = {a:1};
+
 
 const App = () => {
   const [name, setName] = useState("");
+  const getName = () => { return name};
   const [email, setEmail] = useState("");
+  const getEmail = () => { return email};
+  const [task, setTask] = useState(null);
+  const getTask = () => { return task};
+
+  let mainObject = {
+    setName, getName, setEmail, getEmail, setTask, getTask
+  };
 
   return (
     <MainContext.Provider value={mainObject}>
@@ -44,11 +51,6 @@ const App = () => {
           <Tab.Screen
             name="Профиль"
             component={ProfileScreen}
-            options={{tabBarButton: () => null, headerShown: false}}
-          />
-          <Tab.Screen
-            name="Авторизация"
-            component={LoginScreen}
             options={{tabBarButton: () => null, headerShown: false}}
           />
         </Tab.Navigator>
