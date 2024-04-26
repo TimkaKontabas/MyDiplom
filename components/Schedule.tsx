@@ -6,6 +6,7 @@ import {getServerData} from './getServerData';
 
 
 const Schedule = ({navigation}) => {
+  const mainObject = useContext(MainContext);
   const [scheduleData, setScheduleData] = useState([]);
   const [isPaint, setIsPaint] = useState(false);
   const [week, setWeek] = useState(0);
@@ -25,6 +26,7 @@ const Schedule = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
+    mainObject.scheduleData = scheduleData;
     setIsPaint(true);
   }, [scheduleData]);
 
