@@ -2,57 +2,44 @@ import React, {useState, useEffect, useContext} from 'react';
 import {View, Pressable, Text, FlatList, Image, StyleSheet} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
-import {
-  URL_SERVER
-} from '@env';
-console.log(URL_SERVER);
 import {MainContext} from "../MainContext";
+import {getServerData} from './getServerData';
 
-
-const getServerData = (needUpdate, setNeedUpdate, setData, path) =>  {
-  if (needUpdate[path])
-  fetch(URL_SERVER + path, {
-    method: 'Get',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    setData(data);
-    console.log(data);
-    console.log(needUpdate, "bef");
-    needUpdate[path] = false;
-    console.log(needUpdate, "aft");
-    setNeedUpdate(needUpdate);
-  });
-}
 
 const HomeScreen = ({navigation}) => {
     const [selected, setSelected] = useState('');
-    const [users, setUsers] = useState([]);
-    const [tasks, setTasks] = useState([]);
-    const [needUpdate, setNeedUpdate] = useState(
-      { 
-        "getData/UserLiders": true,
-        "getData/Task": true,
-      }
-    );
+    // const [users, setUsers] = useState([]);
+    // const [tasks, setTasks] = useState([]);
+    // const [needUpdate, setNeedUpdate] = useState(
+    //   { 
+    //     "getData/UserLiders": true,
+    //     "getData/Task": true,
+    //   }
+    // );
 
-    useEffect(() => {
-      const unsubscribe = navigation.addListener('focus', () => {
-        setNeedUpdate({ 
-          "getData/UserLiders": true,
-          "getData/Task": true,
-        });
-      });
-      return unsubscribe;
-    }, [navigation]);
+    // useEffect(() => {
+    //   const unsubscribe = navigation.addListener('focus', () => {
+    //     setNeedUpdate({ 
+    //       "getData/UserLiders": true,
+    //       "getData/Task": true,
+    //     });
+    //   });
+    //   return unsubscribe;
+    // }, [navigation]);
 
-    getServerData(needUpdate, setNeedUpdate, setUsers, "getData/UserLiders");
-    getServerData(needUpdate, setNeedUpdate, setTasks, "getData/Task");
+    // getServerData(needUpdate, setNeedUpdate, setUsers, "getData/UserLiders");
+    // getServerData(needUpdate, setNeedUpdate, setTasks, "getData/Task");
 
+    /*<View style={styles.dopContainer}>
+      <FlatList style={styles.taskList}
+        data={tasks}
+        renderItem={({item}) => <TaskItem task={item} navigation={navigation} />}
+      />
+      <FlatList style={styles.userList}
+        data={users}
+        renderItem={({item}) => <UserItem user={item}/>}
+      />
+    </View>*/
 
     return (
       <View style={styles.mainContainer}>
@@ -65,16 +52,7 @@ const HomeScreen = ({navigation}) => {
           }}
         />
 
-        <View style={styles.dopContainer}>
-          <FlatList style={styles.taskList}
-            data={tasks}
-            renderItem={({item}) => <TaskItem task={item} navigation={navigation} />}
-          />
-          <FlatList style={styles.userList}
-            data={users}
-            renderItem={({item}) => <UserItem user={item}/>}
-          />
-        </View>
+        
         
       </View>
     );
