@@ -24,6 +24,7 @@ const TaskScreen = ({navigation}) => {
     <View>
       <Text>{mainObject.scheduleData}</Text>
     </View>
+  );
 
   if (!task)
     return (
