@@ -26,7 +26,7 @@ const Schedule = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    mainObject.scheduleData = scheduleData;
+    mainObject.scheduleData = JSON.strinjify(scheduleData);
     setIsPaint(true);
   }, [scheduleData]);
 
