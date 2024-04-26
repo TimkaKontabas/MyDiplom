@@ -44,7 +44,6 @@ const Schedule = ({navigation}) => {
         <Text>123342</Text>
       </View>
     )
-};
 } catch (error) {
   return (
       <View>
