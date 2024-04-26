@@ -49,7 +49,7 @@ const Schedule = ({navigation}) => {
 const WeekChanger = ({data, week}) => {
   return (
     <View>
-      <Text style={styles.normalText}>{data[week].name}</Text>
+      <Text style={styles.normalText}>{data.name}</Text>
     </View>
   )
 };
@@ -57,7 +57,7 @@ const WeekChanger = ({data, week}) => {
 const ScheduleList = (data, week) => {
   return (
     <FlatList style={styles.sheduleList}
-      data={data[week].days}
+      data={data.days}
       renderItem={({item}) => <DaySchedule dayData={item}/>}
     />
   );
