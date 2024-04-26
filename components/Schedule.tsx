@@ -6,6 +6,7 @@ import {getServerData} from './getServerData';
 
 
 const Schedule = ({navigation}) => {
+  try {
   const [scheduleData, setScheduleData] = useState([]);
   const [isPaint, setIsPaint] = useState(false);
   const [week, setWeek] = useState(0);
@@ -30,7 +31,6 @@ const Schedule = ({navigation}) => {
 
   getServerData(needUpdate, setNeedUpdate, setScheduleData, "getData/WeekSchedule");
 
-  try {
   if (isPaint)
     return (
       <View>
