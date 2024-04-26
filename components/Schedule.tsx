@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, FlatList, Text, StyleSheet} from 'react-native';
+import {View, Pressable, FlatList, Text, StyleSheet} from 'react-native';
 
 import {MainContext} from "../MainContext";
 import {getServerData} from './getServerData';
@@ -33,8 +33,8 @@ const Schedule = ({navigation}) => {
   if (isPaint)
     return (
       <View>
-        <WeekChanger data={scheduleData} />
-        <ScheduleList data={scheduleData} />
+        <WeekChanger data={scheduleData} week={week}/>
+        <ScheduleList data={scheduleData} week={week}/>
       </View>
     );
   else
@@ -45,22 +45,18 @@ const Schedule = ({navigation}) => {
     )
 };
 
-const WeekChanger = (data) => {
+const WeekChanger = ({data, week}) => {
   return (
     <View>
-      <Text style={styles.normalText}>{data.name}</Text>
+      <Text style={styles.normalText}>{data[week].name}</Text>
     </View>
   )
 }
 
-const ScheduleList = (data, week) => {
-  console.log(data, 99999); 
-  console.log(data.map(item => item.ReadyForPickups).reduce((acc, currValue) => { return acc.concat(currValue); }, []), 99923); 
-
-  console.log(JSON.stringify(data.data[0]), 99955);
+const ScheduleList = ({data, week}) => {
   return (
     <FlatList style={styles.sheduleList}
-      data={data.days}
+      data={data[week].days}
       renderItem={({item}) => <DaySchedule dayData={item}/>}
     />
   );
@@ -74,18 +70,18 @@ const DaySchedule = ({dayData}) => {
         <Text>{dayData.date}</Text>
       </View>
       <FlatList style={styles.scheduleItem}
-        data={dayData.tasks}
-        renderItem={({item}) => <TaskSchedule task={item}/>}
+        data={dayData.lessons}
+        renderItem={({item}) => <TaskSchedule lesson={item}/>}
       />
     </View>
   );
 };
 
-const TaskSchedule = ({task}) => {
+const TaskSchedule = ({lesson}) => {
   return (
     <View style={styles.taskSchedule}>
-      <Text style={styles.normalText}>{task.id}</Text>
-      <Text style={styles.normalText}>{task.name}</Text>
+      <Text style={styles.normalText}>{lesson.lesson_nomer}</Text>
+      <Text style={styles.normalText}>{lesson.discipline.name}</Text>
     </View>
   );
 };
