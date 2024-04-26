@@ -26,7 +26,8 @@ const Schedule = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    setIsPaint(true);
+    if (scheduleData.length != 0)
+      setIsPaint(true);
   }, [scheduleData]);
 
   getServerData(needUpdate, setNeedUpdate, setScheduleData, "getData/WeekSchedule");
