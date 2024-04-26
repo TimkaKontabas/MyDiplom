@@ -20,6 +20,11 @@ const TaskScreen = ({navigation}) => {
       return unsubscribe;
     }, [navigation]);
 
+  return (
+    <View>
+      <Text>{mainObject.scheduleData}</Text>
+    </View>
+
   if (!task)
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
