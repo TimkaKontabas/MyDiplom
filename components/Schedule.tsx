@@ -51,7 +51,7 @@ const Schedule = ({navigation}) => {
 const WeekChanger = ({data, week}) => {
   return (
     <View>
-      <Text style={styles.normalText}>{data.name}</Text>
+      <Text style={styles.normalText}>999999{data.name}99999999</Text>
     </View>
   )
 };
