@@ -54,23 +54,40 @@ const Schedule = ({navigation}) => {
 };
 
 const WeekChanger = ({data, week}) => {
+  try {
   return (
     <View>
       <Text style={styles.normalText}>{data[week].name}</Text>
     </View>
   )
+    } catch (error) {
+  return (
+      <View>
+        <Text>{error}</Text>
+      </View>
+    )
 }
+};
 
 const ScheduleList = (data, week) => {
+  try {
   return (
     <FlatList style={styles.sheduleList}
       data={data[week].days}
       renderItem={({item}) => <DaySchedule dayData={item}/>}
     />
   );
+    } catch (error) {
+  return (
+      <View>
+        <Text>{error}</Text>
+      </View>
+    )
+}
 };
 
 const DaySchedule = (dayData) => {
+  try {
   return (
     <View>
       <View>
@@ -83,15 +100,30 @@ const DaySchedule = (dayData) => {
       />
     </View>
   );
+    } catch (error) {
+  return (
+      <View>
+        <Text>{error}</Text>
+      </View>
+    )
+}
 };
 
 const TaskSchedule = (lesson) => {
+  try {
   return (
     <View style={styles.taskSchedule}>
       <Text style={styles.normalText}>{lesson.lesson_nomer}</Text>
       <Text style={styles.normalText}>{lesson.discipline.name}</Text>
     </View>
   );
+    } catch (error) {
+  return (
+      <View>
+        <Text>{error}</Text>
+      </View>
+    )
+}
 };
 
 const styles = StyleSheet.create({
