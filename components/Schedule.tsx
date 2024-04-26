@@ -30,6 +30,7 @@ const Schedule = ({navigation}) => {
 
   getServerData(needUpdate, setNeedUpdate, setScheduleData, "getData/WeekSchedule");
 
+  try {
   if (isPaint)
     return (
       <View>
@@ -41,6 +42,13 @@ const Schedule = ({navigation}) => {
     return (
       <View>
         <Text>123342</Text>
+      </View>
+    )
+};
+} catch (error) {
+  return (
+      <View>
+        <Text>{error}</Text>
       </View>
     )
 };
