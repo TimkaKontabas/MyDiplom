@@ -61,7 +61,7 @@ const WeekChanger = ({data, week}) => {
   )
 }
 
-const ScheduleList = ({data, week}) => {
+const ScheduleList = (data, week) => {
   return (
     <FlatList style={styles.sheduleList}
       data={data[week].days}
@@ -70,7 +70,7 @@ const ScheduleList = ({data, week}) => {
   );
 };
 
-const DaySchedule = ({dayData}) => {
+const DaySchedule = (dayData) => {
   return (
     <View>
       <View>
@@ -85,7 +85,7 @@ const DaySchedule = ({dayData}) => {
   );
 };
 
-const TaskSchedule = ({lesson}) => {
+const TaskSchedule = (lesson) => {
   return (
     <View style={styles.taskSchedule}>
       <Text style={styles.normalText}>{lesson.lesson_nomer}</Text>
