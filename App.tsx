@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './components/HomeScreen';
 import ProfileScreen from './components/ProfileScreen';
-import Shedule from './components/Shedule';
+import Schedule from './components/Schedule';
 import Settings from './components/Settings';
 import TaskScreen from './components/TaskScreen';
 
@@ -42,7 +42,7 @@ const App = () => {
           />
           <Tab.Screen
             name="Расписание"
-            component={Shedule}
+            component={Schedule}
           />
           <Tab.Screen
             name="Настройки"
