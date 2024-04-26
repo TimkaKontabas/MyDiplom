@@ -50,6 +50,7 @@ const Schedule = ({navigation}) => {
         <Text>{error}</Text>
       </View>
     )
+}
 };
 
 const WeekChanger = ({data, week}) => {
