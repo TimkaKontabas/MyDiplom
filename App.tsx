@@ -8,6 +8,7 @@ import ProfileScreen from './components/ProfileScreen';
 import Schedule from './components/Schedule';
 import Settings from './components/Settings';
 import TaskScreen from './components/TaskScreen';
+import GradingScreen from './components/GradingScreen';
 
 import {MainContext} from './MainContext';
 
@@ -39,6 +40,11 @@ const App = () => {
           <Tab.Screen
             name="Задания"
             component={TaskScreen}
+            options={{tabBarButton: () => null, headerShown: false}}
+          />
+          <Tab.Screen
+            name="Выставление"
+            component={GradingScreen}
           />
           <Tab.Screen
             name="Расписание"
