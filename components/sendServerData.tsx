@@ -4,10 +4,8 @@ import {
 console.log(URL_SERVER, "1");
 
 
-export const getServerData = (needUpdate, setNeedUpdate, setData, path, onError=null, body=null) =>  {
-  let params = body ? body : { };
+export const sendServerData = (path, params, answerHandler=null, onError=null) =>  {
 
-  if (needUpdate)
   fetch(URL_SERVER + path, {
     method: 'POST',
     headers: {
@@ -18,8 +16,10 @@ export const getServerData = (needUpdate, setNeedUpdate, setData, path, onError=
   })
   .then(response => response.json())
   .then(data => {
-    setData(data);
-    setNeedUpdate(false);
+    if (answerHandler)
+      answerHandler(data);
+    else
+      console.log(data);
   })
   .catch(
     function (error) {
