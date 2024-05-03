@@ -11,7 +11,7 @@ const Schedule = ({navigation}) => {
   const mainObject = useContext(MainContext);
   const [scheduleData, setScheduleData] = useState([]);
   const [isPaint, setIsPaint] = useState(false);
-  const [week, setWeek] = useState(0);
+  const [week, setWeek] = useState(1);
   const [errorText, setErrorText] = useState("Данные загружаются, здесь должна быть гифка загрузки");
   const [sheduleNeedUpdate, setSheduleNeedUpdate] = useState(true);
   const [discipline, setDiscipline] = useState({});
@@ -65,7 +65,7 @@ const WeekChanger = ({data, week, setWeek}) => {
 
   const handlerChangeWeek = (value) => {
     let newValue = week + value;
-    if (newValue > -1 && newValue < 2)
+    if (newValue > -1 && newValue < 3)
       setWeek(newValue);
   }
 
