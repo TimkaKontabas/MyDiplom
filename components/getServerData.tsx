@@ -1,7 +1,7 @@
 import {
   URL_SERVER
 } from '@env';
-console.log(URL_SERVER, "1");
+console.log(URL_SERVER, "2");
 
 
 export const getServerData = (needUpdate, setNeedUpdate, setData, path, onError=null, body=null) =>  {
