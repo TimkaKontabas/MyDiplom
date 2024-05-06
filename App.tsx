@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import { StyleSheet, View } from 'react-native';
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './components/HomeScreen';
@@ -12,6 +13,15 @@ import GradingScreen from './components/GradingScreen';
 
 import {MainContext} from './MainContext';
 
+
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'rgb(255, 45, 85)',
+    background: 'rgb(155, 90, 100)',
+  },
+}
 
 const Tab = createBottomTabNavigator();
 
@@ -32,7 +42,8 @@ const App = () => {
     <MainContext.Provider value={mainObject}>
       <NavigationContainer>
         <Tab.Navigator
-        screenOptions={{headerShown: false}}>
+        screenOptions={{headerShown: false}}
+        >
           <Tab.Screen
             name="Главная"
             component={HomeScreen}
@@ -40,7 +51,7 @@ const App = () => {
           <Tab.Screen
             name="Задания"
             component={TaskScreen}
-            options={{tabBarButton: () => null, headerShown: false}}
+            options={{tabBarButton: () => null}}
           />
           <Tab.Screen
             name="Выставление"
@@ -57,7 +68,7 @@ const App = () => {
           <Tab.Screen
             name="Профиль"
             component={ProfileScreen}
-            options={{tabBarButton: () => null, headerShown: false}}
+            options={{tabBarButton: () => null}}
           />
         </Tab.Navigator>
       </NavigationContainer>
