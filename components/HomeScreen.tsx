@@ -3,7 +3,7 @@ import {View, Pressable, Text, FlatList, Image, StyleSheet} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
 import {MainContext} from "../MainContext";
-import {getServerData} from './getServerData';
+import {getServerData} from './ServerAPI';
 
 
 const HomeScreen = ({navigation}) => {

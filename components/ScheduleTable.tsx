@@ -28,12 +28,21 @@ export default ScheduleTable = (data) => {
 	    </TouchableOpacity>
 		)
 	}
+	
+	const valueToLabel = [
+	  "",
+	  "Н",
+	  "2",
+	  "3",
+	  "4",
+	  "5",
+	]
 
 	const tableElement = (day_name, date, row_data) => {
 		let tableData = [];
 		row_data.map(
 	    function(lesson) {
-	      tableData.push([lesson.cabinet, DisciplineCell(lesson.discipline, lesson.teacher), lesson.teacher.FIO, lesson.score])
+	      tableData.push([lesson.cabinet, DisciplineCell(lesson.discipline, lesson.teacher), lesson.teacher.FIO, valueToLabel[lesson.score]])
 	    }
 	  )
 		return (

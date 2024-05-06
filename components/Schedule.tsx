@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import {View, Pressable, TouchableOpacity, Text, StyleSheet} from 'react-native';
 
 import {MainContext} from "../MainContext";
-import {getServerData} from './getServerData';
+import {getServerData} from './ServerAPI';
 import ScheduleTable from './ScheduleTable';
 import DisciplineScreen from './DisciplineScreen';
 
