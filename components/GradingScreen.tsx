@@ -145,7 +145,7 @@ export default GradingScreen = ({navigation}) => {
 
   getServerData(
     gradingNeedUpdate, setGradingNeedUpdate, 
-    setGradingData, 'getData/GradingData', onError, 
+    setGradingData, 'GradingData', onError, 
     {group_id: 1, discipline_id: 7}
   );
 

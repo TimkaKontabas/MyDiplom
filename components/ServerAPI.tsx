@@ -1,14 +1,14 @@
 import {
   URL_SERVER
 } from '@env';
-console.log(URL_SERVER, "7");
+console.log(URL_SERVER, "13");
 
 
 export const getServerData = (needUpdate, setNeedUpdate, setData, path, onError=null, body=null) =>  {
   let params = body ? body : { };
 
   if (needUpdate)
-  fetch(URL_SERVER + path, {
+  fetch(URL_SERVER + "getData/" + path, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

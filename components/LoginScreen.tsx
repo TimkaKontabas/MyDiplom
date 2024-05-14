@@ -12,14 +12,14 @@ const LoginScreen = () => {
   return (
     <View style={styles.mainContainer}>
       <EmailAuth />
-      <GoogleLoginButton />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "black"
+    // backgroundColor: "black"
+    color: 'black'
   },
 });
 

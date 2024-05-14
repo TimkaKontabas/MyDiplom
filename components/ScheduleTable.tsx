@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, FlatList, ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Table, TableWrapper,Col, Row, Rows, Cols, Cell } from 'react-native-table-component';
 import {MainContext} from "../MainContext";
 
@@ -53,15 +53,11 @@ export default ScheduleTable = (data) => {
 		)
 	}
 
-  const RenderDays = () => {
-    return data.data.map(
-      function(day) {
-        return (
-        	<View key={day.name}>
-            {tableElement(day.name, day.date, day.lessons)}
-          </View>
-        )
-      }
+  const RenderDay = function({day}) {
+    return (
+    	<View>
+        {tableElement(day.name, day.date, day.lessons)}
+      </View>
     )
   }
 	const tableTitle = ["Кабинет", "Дисциплина", "Преподаватель", "Оценка"];
@@ -70,9 +66,11 @@ export default ScheduleTable = (data) => {
 	  	<Table style={styles.mainColor}>
         <Row data={tableTitle} flexArr={[3, 3, 4, 2]} style={styles.title} textStyle={styles.titleText}></Row>
       </Table>
-      <ScrollView>
-        {RenderDays()}
-	    </ScrollView>
+      <FlatList
+      	data={data.data}
+      	renderItem={({item}) => <RenderDay day={item} />}
+      	keyExtractor={item => item.date}
+      />
 	  </View>
 	)
 }

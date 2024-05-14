@@ -16,8 +16,10 @@ const Schedule = ({navigation}) => {
   const [sheduleNeedUpdate, setSheduleNeedUpdate] = useState(true);
   const [discipline, setDiscipline] = useState({});
   const [isPaintDiscipline, setIsPaintDiscipline] = useState(false);
+  const [maxWeek, setMaxWeek] = useState(3);
   mainObject.setDiscipline = setDiscipline;
   mainObject.setIsPaintDiscipline = setIsPaintDiscipline;
+  mainObject.getMaxWeek = () => { return maxWeek }
 
   const onError = (error) => {
     setErrorText('Ошибка загрузки: ' + error);
@@ -31,12 +33,17 @@ const Schedule = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    if (scheduleData.length != 0)
+    if (scheduleData.length != 0) {
       setIsPaint(true);
+      if (scheduleData[2].length == 0)
+        setMaxWeek(2)
+      else
+        setMaxWeek(3)
+    }
   }, [scheduleData]);
 
   getServerData(
-    sheduleNeedUpdate, setSheduleNeedUpdate, setScheduleData, 'getData/WeekSchedule', onError
+    sheduleNeedUpdate, setSheduleNeedUpdate, setScheduleData, 'WeekSchedule', onError
   );
 
   if (isPaint) {
@@ -58,14 +65,14 @@ const Schedule = ({navigation}) => {
         <Text style={styles.normalText}>{errorText}</Text>
       </View>
     )
-
 };
 
 const WeekChanger = ({data, week, setWeek}) => {
+  const mainObject = useContext(MainContext);
 
   const handlerChangeWeek = (value) => {
     let newValue = week + value;
-    if (newValue > -1 && newValue < 3)
+    if (newValue > -1 && newValue < mainObject.getMaxWeek())
       setWeek(newValue);
   }
 
