@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, Pressable, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import * as Progress from 'react-native-progress';
 
 import {MainContext} from "../MainContext";
 import {getServerData} from './ServerAPI';
@@ -31,7 +32,7 @@ export default DisciplineScreen = ({navigation, discipline}) => {
   getServerData(
     disciplineNeedUpdate, setDisciplineNeedUpdate, 
     setDisciplineData, 'DisciplineData', onError, 
-    {discipline_id: discipline.discipline.id, student_id: 153}
+    {discipline_id: discipline.discipline.id, student_id: mainObject.getUserID()}
   );
 
   const passedLessonessonElement = (lesson) => {
@@ -55,28 +56,70 @@ export default DisciplineScreen = ({navigation, discipline}) => {
     )
   }
 
+  const Square = (color, id) => {
+    return (
+      <View key={id} style={{backgroundColor: {color}}}>
+        <Text> 1</Text>
+      </View>
+    )
+  }
+
+  const RenderLessonsProgress = () => {
+    return (
+      <View style={styles.centerContainer}>
+        <Progress.Bar 
+          progress={disciplineData.count_lessons_passed/disciplineData.count_lessons_in_discipline}
+          width={200}
+          height={20}
+        />
+        <Text style={styles.normalText}> {disciplineData.count_lessons_passed} из {disciplineData.count_lessons_in_discipline}</Text>
+      </View>
+    )
+  }
   const buttonBack = () => {
     return (
       <TouchableOpacity onPress={() => {
         mainObject.setIsPaintDiscipline(false);
       }}>
         <View style={styles.button}>
-          <Text style={styles.buttonText}>Назад</Text>
+          <Text style={[styles.buttonText]}>Назад</Text>
         </View>
       </TouchableOpacity>
     )
+  }
+
+  const head = () => {
+    return (
+      <View style={[styles.rowContainer, {padding: 10, marginBottom: 10, backgroundColor: 'rgba(255, 255, 255, 0.3)'}]}>
+        {buttonBack()}
+        <Text style={[styles.normalText, {fontSize: 16}]}>{discipline.discipline.name}</Text>
+      </View>
+    )
+  }
+
+  const MyButton = (onPress, text) => {
+    return (
+      <TouchableOpacity onPress={() => {onPress()}}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>{text}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+  const teacherHandler = () => {
+    console.log(123);
   }
 
   if (isPaint) {
 		return (
 			<View style={styles.mainContainer}>
 
-				{buttonBack()}
+        {head()}
 
-				<Text style={styles.normalText}>{discipline.discipline.name}</Text>
-				<Text style={styles.normalText}>{discipline.teacher.FIO}</Text>
-				<Text style={styles.normalText}>Всего пар: {disciplineData.count_lessons_in_discipline}</Text>
-				<Text style={styles.normalText}>Прошло пар: {disciplineData.count_lessons_passed}</Text>
+				{MyButton(teacherHandler, discipline.teacher.FIO)}
+
+        {RenderLessonsProgress()}
+
 				<Text style={styles.normalText}>Осталось пар: {disciplineData.count_lessons_left}</Text>
 				<Text style={styles.normalText}>Средняя оценка студента: {disciplineData.AVG_score_student}</Text>
 				{RenderLessonsPassed()}
@@ -96,7 +139,7 @@ export default DisciplineScreen = ({navigation, discipline}) => {
 
 
 const styles = StyleSheet.create({
-	mainContainer: { height: '100%', backgroundColor: '#10f0aa', padding: 10},
+	mainContainer: { height: '100%', backgroundColor: '#10f0aa', paddingLeft: 5},
   columnContainer: {
     flexDirection: 'column'
   },
@@ -108,6 +151,25 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "black",
   },
-  button: {},
+  square: {
+    minWidth: 20,
+    minHeught: 20,
+  },
+  
+  button: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)', 
+    padding: 5, 
+    paddingLeft: 10, 
+    paddingRight: 10, 
+    borderRadius: 14,
+    minWidth: 74,
+    marginRight: 5,
+  },
   buttonText: {textAlign: 'center', color: "black"},
+  centerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 2,
+    paddingTop: 10,
+  },
 });
