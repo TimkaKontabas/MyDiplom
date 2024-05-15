@@ -30,7 +30,7 @@ export default DisciplineScreen = ({navigation, discipline}) => {
 
   getServerData(
     disciplineNeedUpdate, setDisciplineNeedUpdate, 
-    setDisciplineData, 'getData/DisciplineData', onError, 
+    setDisciplineData, 'DisciplineData', onError, 
     {discipline_id: discipline.discipline.id, student_id: 153}
   );
 
