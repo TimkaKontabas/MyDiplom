@@ -1,14 +1,21 @@
+import {useContext} from 'react';
 import {
   URL_SERVER
 } from '@env';
-console.log(URL_SERVER, "13");
+console.log(URL_SERVER, "22"); // Количество подключений к ноуту
+import {MainContext} from "../MainContext";
 
 
 export const getServerData = (needUpdate, setNeedUpdate, setData, path, onError=null, body=null) =>  {
+  const mainObject = useContext(MainContext);
   let params = body ? body : { };
+  let url;
+  if (mainObject.getURL_SERVER()){
+    url = mainObject.getURL_SERVER();
+  } else url = URL_SERVER;
 
   if (needUpdate)
-  fetch(URL_SERVER + "getData/" + path, {
+  fetch(url + "getData/" + path, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -33,7 +40,7 @@ export const getServerData = (needUpdate, setNeedUpdate, setData, path, onError=
 
 export const sendServerData = (path, params, answerHandler=null, onError=null) =>  {
 
-  fetch(URL_SERVER + "sendData/" + path, {
+  fetch(url + "sendData/" + path, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

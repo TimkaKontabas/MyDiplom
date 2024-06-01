@@ -40,6 +40,7 @@ const EmailAuth = () => {
       mainObject.setLogin(loginValue);
       mainObject.setUserID(authData.user_id);
       mainObject.setUserType(authData.user_type);
+      mainObject.setUserData(authData.data);
     }
   }, [authData]);
 
@@ -95,13 +96,19 @@ const EmailAuth = () => {
   else
     return (
       <View style={styles.container}>
-        <Text style={styles.normalText}>{errorText}</Text>
+          <Text style={[styles.normalText, {textAlign: 'center'}]}>{errorText}</Text>
+          <Text style={[styles.normalText, {textAlign: 'center'}]}>Смотрите инструкцию на вкладке «Главная»</Text>
+          
       </View>
     )
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: '100%'
+  },
   mainContainer: {
     backgroundColor: "black"
   },

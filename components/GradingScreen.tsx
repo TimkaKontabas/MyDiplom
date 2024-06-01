@@ -71,6 +71,7 @@ export default GradingScreen = ({navigation}) => {
   const [recordData, setRecordData] = useState([]);
   const [isChangedTableData, setIsChangedTableData] = useState(false);
   const [sendingData, setSendingData] = useState([]);
+  const [gradingGroupNomer, setGradingGroupNomer] = useState(0);
   const getSendingData = () => {return sendingData};
 
   const onError = (error ) => {
@@ -146,7 +147,7 @@ export default GradingScreen = ({navigation}) => {
   getServerData(
     gradingNeedUpdate, setGradingNeedUpdate, 
     setGradingData, 'GradingData', onError, 
-    {group_id: 1, discipline_id: 7}
+    {group_id: 1, discipline_id: disciplineID}
   );
 
   const scoreCell = (score, studentID, lessonID) => {
@@ -159,14 +160,58 @@ export default GradingScreen = ({navigation}) => {
   const headerHeight = 80;
   const leftColumnWidth = 120;
   ////////////////////////////
+  const disciplinePickerRef = useRef<Picker>(null);
+  const groupPickerRef = useRef<Picker>(null);
 
   if (isPaint) {
     return (
       <View style={styles.mainContainer}>
-        <View style={[styles.rowContainer, {marginBottom: 10}]}>
-          <Text>{}</Text>
-          {MyButton(sendData, "Сохранить")}
-          {MyButton(sendData, "Добавить занятие")}
+        <View style={[styles.columnContainer, {marginBottom: 10}]} >
+          <View style={[styles.rowContainer, {marginBottom: 10}]}>
+          <View style={{widht:50, height: 50, flexDirection: 'row' }}>
+            <Picker
+              ref={disciplinePickerRef}
+              selectedValue={disciplineID}
+              mode={"dropdown"}
+              onValueChange={setDisciplineID}
+              style={{ display: null }}
+            >
+              <Picker.Item label={"Ничего"} value={0} />
+              <Picker.Item label={"н"} value={1} />
+            </Picker>
+
+            <TouchableOpacity onPress={() => {disciplinePickerRef.current.focus()}}>
+              <View style={{padding: 5, borderRadius: 14,}}>
+                <Text style={{color: 'black', width: 50, height: 50, textAlign: 'center' }}>{disciplineID}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{widht:50, height: 50, flexDirection: 'row' }}>
+            <Picker
+              ref={groupPickerRef}
+              selectedValue={gradingGroupNomer}
+              mode={"dropdown"}
+              onValueChange={setGradingGroupNomer}
+              style={{ display: null }}
+            >
+              <Picker.Item label={"Ничего"} value={0} />
+              <Picker.Item label={"н"} value={1} />
+              <Picker.Item label={"2"} value={2} />
+              <Picker.Item label={"3"} value={3} />
+            </Picker>
+
+            <TouchableOpacity onPress={() => {groupPickerRef.current.focus()}}>
+              <View style={{padding: 5, borderRadius: 14}}>
+                <Text style={{color: 'black', width: 50, height: 50, textAlign: 'center' }}>{gradingGroupNomer}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          </View>
+          <View style={styles.rowContainer}>
+            {MyButton(() => {setGradingNeedUpdate(true)}, "Запросить")}
+            {MyButton(sendData, "Сохранить")}
+          </View>
         </View>
 
         <TableWithHeaders 
