@@ -14,25 +14,53 @@ const TeacherSchedule = ({navigation}) => {
   const [isPaint, setIsPaint] = useState(false);
   const [scheduleData, setScheduleData] = useState([]);
 
-  getServerData(
-    sheduleNeedUpdate, setSheduleNeedUpdate,
-    setScheduleData, 'TeacherSchedule'
-  );
-
   const onError = (error) => {
     setErrorText('Ошибка загрузки: ' + error);
   }
 
+  getServerData(
+    sheduleNeedUpdate, setSheduleNeedUpdate,
+    setScheduleData, 'TeacherSchedule', onError,
+    {teacher_id: mainObject.getUserID()}
+  );
+
+
   useEffect(() => {
     if (scheduleData.length != 0) {
+      console.log(scheduleData);
       setIsPaint(true);
     }
   }, [scheduleData]);
+
+  const RowSchedule = (data) => {
+    return (
+      <View style={styles.rowContainer}>
+        <Text style={{fontSize: 16, color: 'black', flex:3}}>{data[1]}</Text>
+        <Text style={{fontSize: 16, color: 'black', flex:2}}>{data[2]}</Text>
+        <Text style={{fontSize: 16, color: 'black', flex:2}}>{data[0]}</Text>
+        <Text style={{fontSize: 16, color: 'black', flex:3}}>{data[3]}</Text>
+        <Text style={{fontSize: 16, color: 'black', flex:2}}>{data[4]}</Text>
+      </View>
+    )
+
+  }
 
   if (isPaint) {
     return (
       <View style={{padding: 10}}>
         <Text style={styles.normalText}>Расписание учителя</Text>
+        <View>
+          {scheduleData.map(
+            function(lesson) {
+              return(
+                <View key={lesson[2] + lesson[3]}>
+                  {RowSchedule(lesson)}
+                </View>
+              )
+            }
+          )}
+        </View>
+        
       </View>
     );
   }
@@ -53,6 +81,9 @@ const styles = StyleSheet.create({
   },
   dopContainer: {
     flex: 1,
+    flexDirection: 'row',
+  },
+  rowContainer: {
     flexDirection: 'row',
   },
   taskList: {

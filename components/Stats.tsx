@@ -1,16 +1,46 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, Button, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Button, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 
 import {BarChart} from "react-native-gifted-charts";
 
+import {getServerData, sendServerData} from './ServerAPI';
 import {MainContext} from "../MainContext";
 
 
+const MyBar = ({barData}) => {
+  return (
+    <View>
+      <BarChart
+        showFractionalValue
+        showYAxisIndices
+        hideRules
+        noOfSections={5}
+        xAxisLabelTextStyle={{color: 'black'}}
+        yAxisTextStyle={{color: 'black'}}
+        maxValue={500}
+        data={barData}
+        barWidth={40}
+        sideWidth={15}
+        side="right"
+      />
+    </View>
+  )
+}
+
+
 const TaskScreen = ({navigation}) => {
-  const [countRequestsAll, setCountRequestsAll] = useState(2856);
-  const [countRequestsDay, setCountRequestsDay] = useState(514);
-  const [countRequestsHour, setCountRequestsHour] = useState(72);
-  const [sizeBD, setSizeBD] = useState("156.3 KB");
+  const mainObject = useContext(MainContext);
+  const [countRequestsAll, setCountRequestsAll] = useState(0);
+  const [countRequestsDay, setCountRequestsDay] = useState(0);
+  const [countRequestsHour, setCountRequestsHour] = useState(0);
+  const [sizeBD, setSizeBD] = useState("");
+
+  const [barData, setBarData] = useState([]);
+  const [barNeedUpdate, setBarNeedUpdate] = useState(true);
+  const [reqData, setReqData] = useState({});
+  const [reqNeedUpdate, setReqNeedUpdate] = useState(true);
+  const [isPaint, setIsPaint] = useState(false);
+  const [errorText, setErrorText] = useState("Данные загружаются, здесь должна быть гифка загрузки");
   const [dateBackup, setDateBackup] = useState("2024-05-26 18:41");
 
   const MyButton = (onPress, text) => {
@@ -23,48 +53,48 @@ const TaskScreen = ({navigation}) => {
     )
   }
 
-  const saveBackupBD = () => {
+  getServerData(
+    reqNeedUpdate, setReqNeedUpdate, setReqData, 'Stats', onError
+  );
 
+  useEffect(() => {
+    setCountRequestsAll(reqData.main);
+    setCountRequestsDay(reqData.today);
+    setCountRequestsHour(reqData.hour);
+    setBarData(reqData.barData);
+    console.log(reqData.barData);
+    setSizeBD(reqData.size);
+    setDateBackup(reqData.dateBackup);
+    setIsPaint(true);
+  }, [reqData]);
+
+  const onError = (error) => {
+    setErrorText('Ошибка загрузки: ' + error);
   }
 
-  const barData = [
-    {
-      value: 156,
-      label: '16',
-      frontColor: '#28B2B3',
-      sideColor: '#0FAAAB',
-      topColor: '#66C9C9',
-    },
-    {
-      value: 180,
-      label: '17',
-      frontColor: '#28B2B3',
-      sideColor: '#0FAAAB',
-      topColor: '#66C9C9',
-    },
-    {
-      value: 40,
-      label: '18',
-      frontColor: '#28B2B3',
-      sideColor: '#0FAAAB',
-      topColor: '#66C9C9',
-    },
-    {
-      value: 55,
-      label: '19',
-      frontColor: '#28B2B3',
-      sideColor: '#0FAAAB',
-      topColor: '#66C9C9',
-    },
-    {
-      value: 72,
-      label: '20',
-      frontColor: '#28B2B3',
-      sideColor: '#0FAAAB',
-      topColor: '#66C9C9',
-    }
-  ]
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setReqNeedUpdate(true);
+      setErrorText("Данные загружаются, здесь должна быть гифка загрузки");
+    });
+    return unsubscribe;
+  }, [navigation]);
 
+  const saveBackupBD = () => {
+    sendServerData(
+      "SaveBakupDB",
+      {a:1},
+      (response) => {
+        setReqNeedUpdate(true); 
+        Alert.alert(response[0], response[1]);
+      },
+      ({response}) => {},
+      mainObject
+    )
+  }
+
+  
+  if (isPaint)
   return (
     <View style={styles.container}>
       <Text style={styles.normalText}>Количество запросов к серверу всего: {countRequestsAll}</Text>
@@ -77,27 +107,20 @@ const TaskScreen = ({navigation}) => {
 
       <View style={{marginTop: 20, marginLeft: 25}}>
       <Text style={styles.normalText}>Статистика запросов за последние пять часов</Text>
-      <View>
-        <BarChart
-          showFractionalValue
-          showYAxisIndices
-          hideRules
-          noOfSections={5}
-          xAxisLabelTextStyle={{color: 'black'}}
-          yAxisTextStyle={{color: 'black'}}
-          maxValue={500}
-          data={barData}
-          barWidth={40}
-          sideWidth={15}
-          side="right"
-        />
-      </View>
+      <MyBar barData={barData}/>
         
       </View>
       
 
     </View>
   );
+  else
+    return (
+      <View style={styles.container}>
+        <Text style={styles.normalText}>{errorText}</Text>
+      </View>
+    )
+  
 };
 
 

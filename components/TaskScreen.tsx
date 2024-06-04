@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import {View, Button, Text, StyleSheet, FlatList} from 'react-native';
 
 import {MainContext} from "../MainContext";
+import {getServerData} from './ServerAPI';
 
 
 const RenderDiscipline = function({data}) {
@@ -17,34 +18,53 @@ const RenderDiscipline = function({data}) {
 const TaskScreen = ({navigation}) => {
   const mainObject = useContext(MainContext);
 
-  let tableData = [
-    ["Дисциплина", "Средняя оценка", "Оценка преподавтеля"],
-    ["Русский язык", 4.1, 4],
-    ["Литература", 4.2, 4],
-    ["Иностранный язык", 3.9, 4],
-    ["История", 4.5, 5],
-    ["Обществознание", 4.6, 5],
-    ["Химия", 4.2, 4],
-    ["Биология", 4.3, 5],
-    ["Физическая культура", 3.6, 4],
-    ["Основы безопасности жизнедеятельности", 4, 4],
-    ["Математика", 4.7, 5],
-    ["Информатика", 4.8, 5],
-    ["Физика", 4.1, 4],
-    ["Астрономия", 4.3, 4],
-  ];
+  const [isPaint, setIsPaint] = useState(false);
 
-  
-  return (
-    <View style={{padding: 10}}>
-      <Text style={styles.title}>Результаты учебы</Text>
-      <FlatList
-        data={tableData}
-        renderItem={({item}) => <RenderDiscipline data={item} />}
-        keyExtractor={item => item[0]}
-      />
-    </View>
+  const [tableData, setTableData] = useState([]);
+  const [errorText, setErrorText] = useState("Данные загружаются, здесь должна быть гифка загрузки");
+  const [NeedUpdate, setNeedUpdate] = useState(true);
+
+  useEffect(() => {
+    console.log(tableData);
+    if (tableData.length != 0)
+      setIsPaint(true);
+  }, [tableData]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setNeedUpdate(true);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const onError = (error) => {
+    setErrorText('Ошибка загрузки: ' + error);
+  }
+
+  getServerData(
+    NeedUpdate, setNeedUpdate, 
+    setTableData, 'ResultLearn', onError, 
+    [mainObject.getUserID()]
   );
+
+  if (isPaint) {
+    return (
+      <View style={{padding: 10}}>
+        <Text style={styles.title}>Результаты учебы</Text>
+        <FlatList
+          data={tableData}
+          renderItem={({item}) => <RenderDiscipline data={item} />}
+          keyExtractor={item => item[0]}
+        />
+      </View>
+    );
+  }
+  else
+    return (
+      <View style={styles.container}>
+        <Text style={styles.normalText}>{errorText}</Text>
+      </View>
+    )
 };
 
 

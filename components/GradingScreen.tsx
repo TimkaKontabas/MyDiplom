@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext, useRef} from 'react';
-import {View, ScrollView, TextInput, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, ScrollView, TextInput, TouchableOpacity, Text, StyleSheet, Alert} from 'react-native';
 import { Table, TableWrapper,Col, Row, Rows, Cols, Cell } from 'react-native-table-component';
 import {Picker} from '@react-native-picker/picker';
 
@@ -23,8 +23,6 @@ const CellItem = ({score, getSendingData, setSendingData, studentID, lessonID}) 
   const pickerRef = useRef<Picker>(null);
 
   const onValueChange = (itemValue) => {
-    console.log(getSendingData());
-    console.log(studentID, lessonID, itemValue);
     setValue(itemValue);
     let SD = getSendingData();
     SD.push({studentID, lessonID, itemValue});
@@ -61,32 +59,76 @@ const CellItem = ({score, getSendingData, setSendingData, studentID, lessonID}) 
 export default GradingScreen = ({navigation}) => {
   const mainObject = useContext(MainContext);
   const [gradingData, setGradingData] = useState([]);
-  const [isPaint, setIsPaint] = useState(false);
+  const [isPaint, setIsPaint] = useState(true);
   const [errorText, setErrorText] = useState("Данные загружаются, здесь должна быть гифка загрузки");
-  const [gradingNeedUpdate, setGradingNeedUpdate] = useState(true);
-  const [disciplineID, setDisciplineID] = useState(7);
+  const [gradingNeedUpdate, setGradingNeedUpdate] = useState(false);
   const [head, setHead] = useState([]);
   const [FIOStudents, setFIOStudents] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [recordData, setRecordData] = useState([]);
   const [isChangedTableData, setIsChangedTableData] = useState(false);
   const [sendingData, setSendingData] = useState([]);
+
+  const [disciplineID, setDisciplineID] = useState(0);
   const [gradingGroupNomer, setGradingGroupNomer] = useState(0);
+
+  const [lessonID, setLessonID] = useState(0);
+  const [lessonsID, setLessonsID] = useState([]);
+  const [lessonIDNeedUpdate, setLessonIDNeedUpdate] = useState(true);
+
+  const [disciplines, setDisciplines] = useState([]);
+  const [disciplinesNeedUpdate, setDisciplinesNeedUpdate] = useState(true);
+
+  const [isPaintTable, setIsPaintTable] = useState(false);
+  const [isPaintItog, setIsPaintItog] = useState(false);
+
+  const [myItogs, setItogs] = useState([]);
+  const [myItogsNeedUpdate, setItogsNeedUpdate] = useState(false);
+
+  const [groups, setGroups] = useState([]);
+  const [groupsNeedUpdate, setGroupsNeedUpdate] = useState(true);
+
+  const [sendingItogData, setSendingItogData] = useState({});
+
   const getSendingData = () => {return sendingData};
 
   const onError = (error ) => {
     setErrorText('Ошибка загрузки: ' + error);
   }
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setGradingNeedUpdate(true);
-    });
-    return unsubscribe;
-  }, [navigation]);
+  const getTable = () => {
+    setGradingNeedUpdate(true);
+    setIsPaintItog(false);
+  }
+
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     setGradingNeedUpdate(true);
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);
 
   const sendData = () => {
-    sendServerData("GradingData", [disciplineID, sendingData]);
+    if (isPaintTable)
+      sendServerData(
+        "GradingData",
+        [disciplineID, gradingGroupNomer, sendingData],
+        (response) => {
+          Alert.alert(response[0], response[1]);
+        },
+        ({response}) => {},
+        mainObject
+      );
+    else
+      sendServerData(
+        "UpdateItog",
+        [disciplineID, sendingItogData],
+        (response) => {
+          Alert.alert(response[1], response[0]);
+        },
+        ({response}) => {},
+        mainObject
+      );
   }
 
   const MyButton = (onPress, text) => {
@@ -100,6 +142,7 @@ export default GradingScreen = ({navigation}) => {
   }
 
   useEffect(() => {
+    console.log(gradingData);
     if (gradingData.scores && gradingData.scores.length) {
       
       let newFIOStudents = [];
@@ -120,7 +163,9 @@ export default GradingScreen = ({navigation}) => {
       }
       setRecordData(newRecordData);
 
-      setIsPaint(true);
+      setIsPaintTable(true);
+
+      setSendingData([]);
 
     }
   }, [gradingData]);
@@ -144,10 +189,67 @@ export default GradingScreen = ({navigation}) => {
 
   }, [isChangedTableData]);
 
+  useEffect(() => {
+    if (disciplines[0])
+      setDisciplineID(disciplines[0].id);
+  }, [disciplines]);
+
+  useEffect(() => {
+    if (groups[0])
+      setGradingGroupNomer(groups[0][0]);
+  }, [groups]);
+
+  useEffect(() => {
+    setLessonIDNeedUpdate(true);
+  }, [gradingGroupNomer]);
+
+  useEffect(() => {
+    console.log(myItogs, 1919191919);
+    if (myItogs.length != 0)
+      setIsPaintItog(true);
+  }, [myItogs]);
+  
+
   getServerData(
     gradingNeedUpdate, setGradingNeedUpdate, 
     setGradingData, 'GradingData', onError, 
-    {group_id: 1, discipline_id: disciplineID}
+    {group_id: gradingGroupNomer, discipline_id: disciplineID, lesson_nomer: lessonID}
+  );
+
+  getServerData(
+    disciplinesNeedUpdate, setDisciplinesNeedUpdate, 
+    setDisciplines, 'TeacherDisciplines', onError, 
+    {teacher_id: mainObject.getUserID()}
+  );
+
+  const handlerClickBtnItog = () => {
+    setIsPaintTable(false);
+    setItogsNeedUpdate(true);
+    setSendingItogData({});
+  }
+
+  const getGroups = () => {
+    // я и сам не знаю зачем это, но оно не работало как другие /( (X)_(X) )\
+    getServerData(
+      groupsNeedUpdate, setGroupsNeedUpdate, 
+      setGroups, 'GroupsWithDiscipline', onError, 
+      {discipline_id: disciplineID}
+    );
+  }
+
+  getServerData(
+    myItogsNeedUpdate, setItogsNeedUpdate, 
+    setItogs, 'ItogGrading', onError, 
+    {discipline_id: disciplineID, group_id: gradingGroupNomer}
+  );
+
+
+  getGroups();
+
+  getServerData(
+    lessonIDNeedUpdate, setLessonIDNeedUpdate, 
+    setLessonsID, 'LessonsNomer', onError, 
+    {group_id: gradingGroupNomer, discipline_id: disciplineID}
   );
 
   const scoreCell = (score, studentID, lessonID) => {
@@ -156,12 +258,110 @@ export default GradingScreen = ({navigation}) => {
     )
   }
 
+  const MyTable = () => {
+    if (isPaintTable)
+      return (
+        <TableWithHeaders 
+          tableHead={head} 
+          recordData={recordData}
+          tableData={tableData}
+          headerHeight={headerHeight}
+          leftColumnWidth={leftColumnWidth} />
+      );
+    else
+      return (
+        <View></View>
+      )
+  }
+
+  const RowItog = (data) => {
+    const [scoreText, setScoreText] = useState(data[1].toString());
+    const onChangeScoreText = (text) => {
+      sendingItogData[data[2]] = text;
+      setScoreText(text);
+      setSendingItogData(sendingItogData);
+    }
+    return (
+      <View style={styles.rowContainer}>
+        <Text style={{fontSize: 16, color: 'black', flex:3}}>{data[0]}</Text>
+        <TextInput 
+          editable
+          maxLength={1}
+          onChangeText={text => onChangeScoreText(text)}
+          value={scoreText}
+          style={{fontSize: 16, color: 'black', flex:1}}
+        />
+      </View>
+    )
+
+  }
+
+  const ItogGrading = () => {
+
+    if (isPaintItog){
+          console.log(2222, myItogs);
+    
+          return (
+            <ScrollView>
+              {myItogs.map(
+                function(itog) {
+                  return(
+                    <View key={itog[0]}>
+                      {RowItog(itog)}
+                    </View>
+                  )
+                }
+              )}
+            </ScrollView> 
+          )}
+    else
+      return (
+        <View></View>
+      )
+  }
+
   ////////////////////////////
   const headerHeight = 80;
   const leftColumnWidth = 120;
   ////////////////////////////
   const disciplinePickerRef = useRef<Picker>(null);
   const groupPickerRef = useRef<Picker>(null);
+  const lessonIDPickerRef = useRef<Picker>(null);
+
+  const handlerChangeDiscipline = (value) => {
+    setDisciplineID(value);
+    setGradingGroupNomer(0);
+    setIsPaintTable(false);
+  }
+  const getNameDiscipline = () => {
+    for (let i=0; i < disciplines.length; i++) {
+      if (disciplines[i])
+        if (disciplines[i].id == disciplineID)
+          return disciplines[i].name;
+    }
+  }
+
+  const getNomerGroup = () => {
+    for (let i=0; i < groups.length; i++) {
+      console.log(groups, gradingGroupNomer, "37628374728");
+      if (groups[i])
+        if (groups[i][0] == gradingGroupNomer)
+          return groups[i][1];
+    }
+  }
+
+  const getLessonName = () => {
+    for (let i=0; i < lessonsID.length; i++) {
+      if (lessonsID[i])
+        if (lessonsID[i][1] == lessonID)
+          return lessonsID[i][0] + " занятие " + lessonsID[i][1];
+    }
+  }
+
+  const handlerChangeGroupNomer = (value) => {
+    setGradingGroupNomer(value);
+    setLessonIDNeedUpdate(true);
+  } 
 
   if (isPaint) {
     return (
@@ -173,16 +373,21 @@ export default GradingScreen = ({navigation}) => {
               ref={disciplinePickerRef}
               selectedValue={disciplineID}
               mode={"dropdown"}
-              onValueChange={setDisciplineID}
+              onValueChange={handlerChangeDiscipline}
               style={{ display: null }}
             >
-              <Picker.Item label={"Ничего"} value={0} />
-              <Picker.Item label={"н"} value={1} />
+              {disciplines.map(
+                function({id, name}) {
+                  return(
+                    <Picker.Item key={id} label={name} value={id} />
+                  )
+                }
+              )}
             </Picker>
 
             <TouchableOpacity onPress={() => {disciplinePickerRef.current.focus()}}>
               <View style={{padding: 5, borderRadius: 14,}}>
-                <Text style={{color: 'black', width: 50, height: 50, textAlign: 'center' }}>{disciplineID}</Text>
+                <Text style={{color: 'black', width: 50, height: 50, textAlign: 'center' }}>{getNameDiscipline()}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -192,34 +397,60 @@ export default GradingScreen = ({navigation}) => {
               ref={groupPickerRef}
               selectedValue={gradingGroupNomer}
               mode={"dropdown"}
-              onValueChange={setGradingGroupNomer}
+              onValueChange={handlerChangeGroupNomer}
               style={{ display: null }}
             >
-              <Picker.Item label={"Ничего"} value={0} />
-              <Picker.Item label={"н"} value={1} />
-              <Picker.Item label={"2"} value={2} />
-              <Picker.Item label={"3"} value={3} />
+              {groups.map(
+                function(group) {
+                  return(
+                    <Picker.Item key={group[0]} label={group[1]} value={group[0]} />
+                  )
+                }
+              )}
             </Picker>
 
             <TouchableOpacity onPress={() => {groupPickerRef.current.focus()}}>
               <View style={{padding: 5, borderRadius: 14}}>
-                <Text style={{color: 'black', width: 50, height: 50, textAlign: 'center' }}>{gradingGroupNomer}</Text>
+                <Text style={{color: 'black', width: 50, height: 50, textAlign: 'center' }}>{getNomerGroup()}</Text>
               </View>
             </TouchableOpacity>
           </View>
+
+          <View style={{widht:70, height: 50, flexDirection: 'row' }}>
+            <Picker
+              ref={lessonIDPickerRef}
+              selectedValue={lessonID}
+              mode={"dropdown"}
+              onValueChange={setLessonID}
+              style={{ display: null }}
+            >
+              {lessonsID.map(
+                function(lesson) {
+                  return(
+                    <Picker.Item key={lesson[1]} label={lesson[0] + " занятие " + lesson[1]} value={lesson[1]} />
+                  )
+                }
+              )}
+            </Picker>
+
+            <TouchableOpacity onPress={() => {lessonIDPickerRef.current.focus()}}>
+              <View style={{padding: 5, borderRadius: 14}}>
+                <Text style={{color: 'black', width: 70, height: 50, textAlign: 'center' }}>{getLessonName(lessonID)}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
           </View>
           <View style={styles.rowContainer}>
-            {MyButton(() => {setGradingNeedUpdate(true)}, "Запросить")}
+            {MyButton(() => {getTable()}, "Запросить")}
             {MyButton(sendData, "Сохранить")}
+            {MyButton(handlerClickBtnItog, "Выставить итоговые оценки")}
           </View>
         </View>
 
-        <TableWithHeaders 
-          tableHead={head} 
-          recordData={recordData}
-          tableData={tableData}
-          headerHeight={headerHeight}
-          leftColumnWidth={leftColumnWidth} />
+        <MyTable />
+
+        <ItogGrading />
 
       </View>
     )

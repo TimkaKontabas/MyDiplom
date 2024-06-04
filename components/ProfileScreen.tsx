@@ -1,9 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, Text, FlatList, Image, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, FlatList, Image, StyleSheet, TextInput, TouchableOpacity, Alert} from 'react-native';
 
 import {MainContext} from "../MainContext";
 import LoginScreen from './LoginScreen';
 import GoogleSignoutButton from './Buttons/GoogleSignoutButton';
+import {sendServerData} from './ServerAPI';
 
 
 const logout = (mainObject) => {
@@ -52,7 +53,15 @@ const Profile = () => {
 
   const ComponentChangeUserData = () => {
     const saveUserAuthData = () => {
-      ////////////////////////////////////////////////////////////////////
+      sendServerData(
+        "UpdateUserData",
+        {login: newLogin, password: newPassword, old_login: mainObject.getLogin()},
+        (response) => {
+          Alert.alert(response[0], response[1]);
+        },
+        ({response}) => {},
+        mainObject
+      )
     }
     return (
       <View style={{marginTop: 15,marginBottom: 15}}>
