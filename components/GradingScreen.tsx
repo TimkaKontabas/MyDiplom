@@ -228,23 +228,18 @@ export default GradingScreen = ({navigation}) => {
     setSendingItogData({});
   }
 
-  const getGroups = () => {
-    // я и сам не знаю зачем это, но оно не работало как другие /( (X)_(X) )\
-    getServerData(
-      groupsNeedUpdate, setGroupsNeedUpdate, 
-      setGroups, 'GroupsWithDiscipline', onError, 
-      {discipline_id: disciplineID}
-    );
-  }
+  // я и сам не знаю зачем это, но оно не работало как другие /( (X)_(X) )\
+  getServerData(
+    groupsNeedUpdate, setGroupsNeedUpdate, 
+    setGroups, 'GroupsWithDiscipline', onError, 
+    {discipline_id: disciplineID}
+  );
 
   getServerData(
     myItogsNeedUpdate, setItogsNeedUpdate, 
     setItogs, 'ItogGrading', onError, 
     {discipline_id: disciplineID, group_id: gradingGroupNomer}
   );
-
-
-  getGroups();
 
   getServerData(
     lessonIDNeedUpdate, setLessonIDNeedUpdate, 

@@ -2,7 +2,7 @@ import {useContext} from 'react';
 import {
   URL_SERVER
 } from '@env';
-console.log(URL_SERVER, "24"); // Количество подключений к ноуту
+console.log(URL_SERVER, "27"); // Количество подключений к ноуту
 import {MainContext} from "../MainContext";
 
 
