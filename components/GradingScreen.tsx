@@ -208,8 +208,14 @@ export default GradingScreen = ({navigation}) => {
     if (myItogs.length != 0)
       setIsPaintItog(true);
   }, [myItogs]);
-  
 
+
+  getServerData(
+    groupsNeedUpdate, setGroupsNeedUpdate, 
+    setGroups, 'GroupsWithDiscipline', onError, 
+    {discipline_id: disciplineID, teacher_id: mainObject.getUserID()}
+  );
+  
   getServerData(
     gradingNeedUpdate, setGradingNeedUpdate, 
     setGradingData, 'GradingData', onError, 
@@ -228,12 +234,7 @@ export default GradingScreen = ({navigation}) => {
     setSendingItogData({});
   }
 
-  // я и сам не знаю зачем это, но оно не работало как другие /( (X)_(X) )\
-  getServerData(
-    groupsNeedUpdate, setGroupsNeedUpdate, 
-    setGroups, 'GroupsWithDiscipline', onError, 
-    {discipline_id: disciplineID}
-  );
+  
 
   getServerData(
     myItogsNeedUpdate, setItogsNeedUpdate, 
